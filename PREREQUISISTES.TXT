@@ -1,0 +1,73 @@
+
+-- on tenant with admin account
+CREATE USER TECH_MONI PASSWORD "UltraComplexPassword2020!";             -- Technical user for Rust program
+ALTER USER TECH_MONI DISABLE PASSWORD LIFETIME;
+GRANT MONITORING to TECH_MONI;
+GRANT ABAP_READ to TECH_MONI;
+
+
+/usr/local/nagios/libexec/hana_nagios_rust
+
+cat /usr/local/nagios/etc/resource.cfg
+# SAP HANA - sap_hana_server - HDB
+$USER7$=TECH_MONI
+$USER8$=UltraComplexPassword2020!
+
+cat /usr/local/nagios/etc/objects/commands.cfg
+define command{
+        command_name hana_nagios_rust
+        command_line $USER1$/hana_nagios_rust $ARG1$ $ARG2$ $ARG3$ $ARG4$ $ARG5$
+}
+
+
+cat /usr/local/nagios/etc/objects/linux.cfg
+######################
+# backup_data, backup_log , cpu, memory, services, db_data, db_log, alert
+define service {
+        service_description     app_hana_database_backup_data
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!backup_data
+}
+define service {
+        service_description     app_hana_database_backup_log
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!backup_log
+}
+define service {
+        service_description     app_hana_database_cpu
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!cpu
+}
+define service {
+        service_description     app_hana_database_memory
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!memory
+}
+define service {
+        service_description     app_hana_database_services
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!services
+}
+define service {
+        service_description     app_hana_database_db_data
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!db_data
+}
+define service {
+        service_description     app_hana_database_db_log
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!db_log
+}
+define service {
+        service_description     app_hana_database_alert
+        host_name       sap_hana_server
+        use             generic-service
+        check_command   hana_nagios_rust!$HOSTADDRESS$!$USER7$!$USER8$!30044!alert
+}
